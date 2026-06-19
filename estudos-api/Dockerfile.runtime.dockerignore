@@ -1,0 +1,3 @@
+# Runtime image only needs the prebuilt jar in target/.
+*
+!target

@@ -1,0 +1,9 @@
+# Runtime-only image for CI: copies a jar already built on the x86 runner.
+# A Spring Boot jar is platform-independent, so it runs on the arm64 JRE as-is —
+# this avoids running Maven under QEMU emulation when building for linux/arm64.
+# Build the jar first: mvn -B package -DskipTests
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

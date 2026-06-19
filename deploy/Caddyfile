@@ -1,0 +1,6 @@
+# Caddy issues and renews HTTPS automatically (Let's Encrypt) for {$DOMAIN}.
+# Set DOMAIN in .env. With no domain, use sslip.io: atlas.<PUBLIC_IP>.sslip.io
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy app:8080
+}
