@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Colors, Radii, Spacing, Fonts } from '../../src/constants/design';
 import { useLanguage } from '../../src/hooks/useLanguage';
 import { validateLogin, isOnboarded } from '../../src/hooks/useUser';
+import { AtlasLogo } from '../../src/components/AtlasLogo';
 import type { Lang } from '../../src/constants/strings';
 
 export default function LoginScreen() {
@@ -28,6 +29,7 @@ export default function LoginScreen() {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.inner}>
         <View style={styles.card}>
+          <View style={styles.logoWrap}><AtlasLogo size={56} /></View>
           <Text style={styles.wordmark}>Atlas</Text>
           <Text style={styles.tagline}>{t.welcomeAtlas}</Text>
 
@@ -84,6 +86,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bone },
   inner: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Spacing.xl, paddingBottom: 60 },
   card: { width: '100%', maxWidth: 420 },
+  logoWrap: { alignItems: 'center', marginBottom: Spacing.sm },
   wordmark: { fontSize: 48, fontFamily: Fonts.bold, color: Colors.clay, textAlign: 'center', letterSpacing: -1, marginBottom: Spacing.xs },
   tagline: { fontSize: 16, fontFamily: Fonts.regular, color: Colors.inkMuted, textAlign: 'center', marginBottom: Spacing.lg },
   langRow: { flexDirection: 'row', gap: Spacing.sm, justifyContent: 'center', marginBottom: Spacing.lg },

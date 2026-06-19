@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Colors, Radii, Spacing, Fonts } from '../../src/constants/design';
 import { useLanguage } from '../../src/hooks/useLanguage';
 import { getUser, saveUser } from '../../src/hooks/useUser';
+import { AtlasLogo } from '../../src/components/AtlasLogo';
 import type { Lang } from '../../src/constants/strings';
 
 export default function RegisterScreen() {
@@ -34,6 +35,7 @@ export default function RegisterScreen() {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.inner} keyboardShouldPersistTaps="handled">
         <View style={styles.card}>
+        <View style={styles.logoWrap}><AtlasLogo size={56} /></View>
         <Text style={styles.wordmark}>Atlas</Text>
         <Text style={styles.tagline}>{t.signUp}</Text>
 
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bone },
   inner: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Spacing.xl, paddingVertical: 60 },
   card: { width: '100%', maxWidth: 420 },
+  logoWrap: { alignItems: 'center', marginBottom: Spacing.sm },
   wordmark: { fontSize: 48, fontFamily: Fonts.bold, color: Colors.clay, textAlign: 'center', letterSpacing: -1, marginBottom: Spacing.xs },
   tagline: { fontSize: 16, fontFamily: Fonts.regular, color: Colors.inkMuted, textAlign: 'center', marginBottom: Spacing.lg },
   langRow: { flexDirection: 'row', gap: Spacing.sm, justifyContent: 'center', marginBottom: Spacing.lg },
