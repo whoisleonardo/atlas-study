@@ -7,6 +7,7 @@ import { getItemsByTopico } from '../../src/services/itemRepo';
 import { enqueuePendingOp, sync } from '../../src/services/sync';
 import { api } from '../../src/services/api';
 import { TopicCard } from '../../src/components/TopicCard';
+import { AtlasLogo } from '../../src/components/AtlasLogo';
 import type { TopicoResumo, Item } from '../../src/types';
 
 export default function HomeScreen() {
@@ -78,7 +79,10 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.heading}>Topics</Text>
+        <View style={styles.headerLeft}>
+          <AtlasLogo size={26} />
+          <Text style={styles.heading}>Topics</Text>
+        </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowModal(true)}>
           <Text style={styles.addText}>+</Text>
         </TouchableOpacity>
@@ -132,6 +136,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.bone },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: Spacing.md, paddingTop: 60, paddingBottom: Spacing.md },
+  headerLeft: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   heading: { fontSize: 28, fontFamily: Fonts.bold, color: Colors.ink },
   addBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.clay, alignItems: 'center', justifyContent: 'center' },
   addText: { color: '#fff', fontSize: 22, lineHeight: 26 },
