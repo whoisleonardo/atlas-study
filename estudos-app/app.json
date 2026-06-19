@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Atlas",
+    "slug": "estudos-app",
+    "scheme": "estudos",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "orientation": "portrait",
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "color": "#A85C42"
+        }
+      ],
+      "expo-splash-screen",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.estudos.app"
+    },
+    "android": {
+      "package": "com.estudos.app"
+    }
+  }
+}
