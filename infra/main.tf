@@ -112,10 +112,11 @@ resource "oci_core_instance" "vm" {
   display_name        = var.instance_name
   shape               = "VM.Standard.A1.Flex"
 
-  # Teto Always Free (desde 15/06/2026): 2 OCPU / 12 GB
+  # Always Free A1 (teto 4 OCPU / 24 GB). Pedimos 1 OCPU / 6 GB: pega
+  # capacidade bem mais fácil que 2+ e sobra de folga pro stack.
   shape_config {
-    ocpus         = 2
-    memory_in_gbs = 12
+    ocpus         = 1
+    memory_in_gbs = 6
   }
 
   source_details {
