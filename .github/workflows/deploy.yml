@@ -24,14 +24,9 @@ jobs:
           java-version: "21"
           cache: maven
 
-      # Build the jar natively on the x86 runner (fast). The jar is
-      # platform-independent and runs on the arm64 JRE in the image.
       - name: Build jar
         working-directory: estudos-api
         run: mvn -B -ntp package -DskipTests
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
@@ -43,12 +38,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image (arm64)
+      - name: Build and push image (amd64)
         uses: docker/build-push-action@v6
         with:
           context: estudos-api
           file: estudos-api/Dockerfile.runtime
-          platforms: linux/arm64
+          platforms: linux/amd64
           push: true
           tags: |
             ${{ env.IMAGE }}:latest

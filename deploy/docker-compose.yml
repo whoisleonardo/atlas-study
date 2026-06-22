@@ -1,34 +1,19 @@
-# Runs on the VM (~/atlas). Pulls the app image from GHCR; Caddy terminates HTTPS.
+# Runs on the VM (~/atlas). Lean stack for the 1 GB x86 micro:
+# the API stores data in a file-based H2 DB (no Postgres container).
 # Requires a .env file alongside this one (see .env.example).
 services:
-  db:
-    image: postgres:16
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: estudos
-      POSTGRES_USER: estudos
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U estudos"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   app:
     image: ${APP_IMAGE:-ghcr.io/whoisleonardo/atlas-study:latest}
     restart: unless-stopped
     environment:
-      SPRING_PROFILES_ACTIVE: postgres
-      DB_URL: jdbc:postgresql://db:5432/estudos
-      DB_USERNAME: estudos
-      DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      # Default profile (H2). File-based so data survives restarts.
+      SPRING_DATASOURCE_URL: jdbc:h2:file:/data/atlas;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+      # Cap the JVM heap so it fits comfortably in 1 GB RAM + swap.
+      JAVA_TOOL_OPTIONS: -Xmx384m
+    volumes:
+      - h2data:/data
     expose:
       - "8080"
-    depends_on:
-      db:
-        condition: service_healthy
 
   caddy:
     image: caddy:2
@@ -46,6 +31,6 @@ services:
       - app
 
 volumes:
-  pgdata:
+  h2data:
   caddy_data:
   caddy_config:

@@ -10,20 +10,22 @@ git push (main)
    ▼
 GitHub Actions
    ├─ build do .jar (runner x86, rápido)
-   ├─ build da imagem linux/arm64
+   ├─ build da imagem linux/amd64
    ├─ push → GHCR (ghcr.io/whoisleonardo/atlas-study)
    └─ SSH na VM → docker compose pull && up -d
                           │
                           ▼
-                 VM Oracle A1 (ARM, Always Free)
+            VM Oracle E2.1.Micro (x86, Always Free, 1 GB)
                  ┌───────────────────────────────┐
                  │  Caddy (HTTPS) → app : 8080     │
-                 │  app (Spring)  → db   : 5432     │
-                 │  db (Postgres) + volume          │
+                 │  app (Spring)  → H2 (arquivo)   │
+                 │                  + volume        │
                  └───────────────────────────────┘
 ```
 
-A VM é provisionada por **Terraform**. Nela, um **Docker Compose** roda `app` + `postgres` + `caddy`. O Caddy emite e renova o HTTPS sozinho.
+A VM é provisionada por **Terraform**. Nela, um **Docker Compose** roda `app` + `caddy`. O app guarda os dados num **H2 em arquivo** (volume), sem Postgres — cabe folgado em 1 GB de RAM. O Caddy emite e renova o HTTPS sozinho.
+
+> **Por que x86/H2?** O A1 ARM (4 OCPU/24 GB) é mais potente, mas em São Paulo a capacidade Always Free quase nunca libera ("Out of host capacity"). A E2.1.Micro x86 sempre tem capacidade; com 1 GB, trocar Postgres por H2 em arquivo deixa o stack leve e estável para uso pessoal.
 
 ## Estrutura do repositório
 
@@ -82,7 +84,7 @@ Depois que a VM sobe, o **cloud-init** leva 1–2 min instalando o Docker, abrin
 
 ## 2. Preparar a VM
 
-Edite o domínio em `deploy/Caddyfile` (ou use `atlas.<public_ip>.sslip.io`), depois copie os arquivos de deploy e gere a senha do banco:
+Copie os arquivos de deploy e configure o domínio:
 
 ```bash
 # do seu computador, na raiz do repo:
@@ -92,7 +94,6 @@ scp deploy/docker-compose.yml deploy/Caddyfile deploy/.env.example ubuntu@<publi
 ssh ubuntu@<public_ip>
 cd ~/atlas
 cp .env.example .env
-sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$(openssl rand -base64 24)|" .env
 # edite o DOMAIN no .env (ou use atlas.<public_ip>.sslip.io)
 ```
 
@@ -122,7 +123,7 @@ A VM precisa baixar a imagem. O caminho mais simples: depois do **primeiro** bui
 
 ### 3.3 Como o pipeline funciona
 
-O `.jar` é compilado no runner x86 (nativo, rápido) e só **copiado** para a imagem `arm64` via `estudos-api/Dockerfile.runtime` — evita rodar Maven emulado. A imagem vai pro GHCR, e o passo de SSH faz `docker compose pull && up -d` na VM.
+O `.jar` é compilado no runner x86 (nativo, rápido) e **copiado** para a imagem `amd64` via `estudos-api/Dockerfile.runtime`. A imagem vai pro GHCR, e o passo de SSH faz `docker compose pull && up -d` na VM.
 
 ---
 
@@ -163,7 +164,8 @@ Atualizar é só dar `git push`. Para conseguir voltar versões, troque a tag `:
 
 ## Pontos de atenção (resumo)
 
-- **ARM:** a imagem precisa ser `linux/arm64` (o workflow já faz com `buildx`). Se sair x86, o container não sobe na A1.
+- **Arquitetura:** a imagem é `linux/amd64` (E2.1.Micro é x86). O workflow já builda assim.
+- **RAM (1 GB):** o `cloud-init` cria 2 GB de swap e o app roda com `-Xmx384m`. Evite adicionar serviços pesados na mesma VM.
+- **Dados em H2 arquivo:** ficam no volume `h2data` (`/data/atlas.mv.db` no container). Backup = copiar esse arquivo. Migrar pra Postgres depois é possível se um dia trocar de VM.
 - **Dois firewalls:** Security List na nuvem (Terraform) **e** iptables no SO (cloud-init) — ambos já automatizados aqui.
-- **Capacidade do A1:** "Out of capacity" se resolve rodando `terraform apply` de novo.
 - **Segurança:** nunca comite `terraform.tfvars`, `*.pem`, `*.tfstate` nem `.env` (já no `.gitignore`). O state guarda dados sensíveis em texto.

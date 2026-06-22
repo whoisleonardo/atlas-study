@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+# Swap de 2 GB — essencial numa VM de 1 GB de RAM (E2.1.Micro).
+if [ ! -f /swapfile ]; then
+  fallocate -l 2G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+
 # Instala Docker
 curl -fsSL https://get.docker.com | sh
 usermod -aG docker ubuntu

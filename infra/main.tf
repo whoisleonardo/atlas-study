@@ -21,12 +21,12 @@ data "oci_identity_availability_domains" "ads" {
   compartment_id = var.tenancy_ocid
 }
 
-# Acha a imagem Ubuntu 24.04 ARM mais recente (sem hardcode de OCID)
+# Acha a imagem Ubuntu 24.04 x86 mais recente compatível com a shape (sem hardcode de OCID)
 data "oci_core_images" "ubuntu" {
   compartment_id           = var.compartment_ocid
   operating_system         = "Canonical Ubuntu"
   operating_system_version = "24.04"
-  shape                    = "VM.Standard.A1.Flex"
+  shape                    = "VM.Standard.E2.1.Micro"
   sort_by                  = "TIMECREATED"
   sort_order               = "DESC"
 }
@@ -110,14 +110,9 @@ resource "oci_core_instance" "vm" {
   compartment_id      = var.compartment_ocid
   availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
   display_name        = var.instance_name
-  shape               = "VM.Standard.A1.Flex"
-
-  # Always Free A1 (teto 4 OCPU / 24 GB). Pedimos 1 OCPU / 6 GB: pega
-  # capacidade bem mais fácil que 2+ e sobra de folga pro stack.
-  shape_config {
-    ocpus         = 1
-    memory_in_gbs = 6
-  }
+  # Always Free x86 (1 OCPU / 1 GB) — shape fixa, sem shape_config.
+  # Quase sempre tem capacidade, diferente do A1 ARM em São Paulo.
+  shape = "VM.Standard.E2.1.Micro"
 
   source_details {
     source_type             = "image"
