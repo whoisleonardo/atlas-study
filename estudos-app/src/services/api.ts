@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { ItemStatus } from '../types';
 
-const DEFAULT_BASE = 'http://localhost:8080';
+const DEFAULT_BASE = 'https://atlas.64.181.185.68.sslip.io';
 const KEY = 'api_base_url';
 
 export async function getBaseUrl(): Promise<string> {
