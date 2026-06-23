@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Alert, RefreshControl } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Alert, RefreshControl, KeyboardAvoidingView, Platform } from 'react-native';
 import { useFocusEffect } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, Radii, Fonts } from '../../src/constants/design';
 import { getAllCursos, insertCurso, upsertCurso, deleteCurso } from '../../src/services/cursoRepo';
 import { getAllTopicos } from '../../src/services/topicoRepo';
@@ -114,7 +115,7 @@ export default function CursosScreen() {
         <View style={styles.header}>
           <Text style={styles.heading}>{t.tabCourses}</Text>
           <TouchableOpacity style={styles.addBtn} onPress={() => setShowModal(true)}>
-            <Text style={styles.addBtnText}>+</Text>
+            <Ionicons name="add" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
 
@@ -162,7 +163,7 @@ export default function CursosScreen() {
       </ScrollView>
 
       <Modal visible={showModal} transparent animationType="slide">
-        <View style={styles.overlay}>
+        <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.sheet}>
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               <Text style={styles.sheetTitle}>{t.addCourse}</Text>
@@ -234,7 +235,7 @@ export default function CursosScreen() {
               </View>
             </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </>
   );

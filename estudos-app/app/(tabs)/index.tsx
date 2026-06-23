@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
-import { FlatList, View, Text, StyleSheet, TouchableOpacity, RefreshControl, TextInput, Modal, Alert } from 'react-native';
+import { FlatList, View, Text, StyleSheet, TouchableOpacity, RefreshControl, TextInput, Modal, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, Radii, Fonts } from '../../src/constants/design';
 import { getAllTopicos, insertTopico, upsertTopico, deleteTopico } from '../../src/services/topicoRepo';
 import { getItemsByTopico } from '../../src/services/itemRepo';
@@ -84,7 +85,7 @@ export default function HomeScreen() {
           <Text style={styles.heading}>Topics</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowModal(true)}>
-          <Text style={styles.addText}>+</Text>
+          <Ionicons name="add" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
 
@@ -107,7 +108,7 @@ export default function HomeScreen() {
       />
 
       <Modal visible={showModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>New Topic</Text>
             <TextInput
@@ -127,7 +128,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );

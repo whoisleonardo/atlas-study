@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Colors, Spacing, Radii, Fonts } from '../../src/constants/design';
 import { getTopico, updateTopicoCor } from '../../src/services/topicoRepo';
@@ -232,7 +232,7 @@ export default function TopicoDetail() {
       </ScrollView>
 
       <Modal visible={showItemModal} transparent animationType="slide">
-        <View style={styles.overlay}>
+        <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.sheet}>
             <Text style={styles.sheetTitle}>{t.addItem}</Text>
 
@@ -271,11 +271,11 @@ export default function TopicoDetail() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       <Modal visible={showCursoModal} transparent animationType="slide">
-        <View style={styles.overlay}>
+        <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.sheet}>
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               <Text style={styles.sheetTitle}>{t.addCourse}</Text>
@@ -332,7 +332,7 @@ export default function TopicoDetail() {
               </View>
             </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </>
   );
