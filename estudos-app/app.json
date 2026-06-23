@@ -20,12 +20,6 @@
       "expo-router",
       "expo-font",
       [
-        "expo-notifications",
-        {
-          "color": "#A85C42"
-        }
-      ],
-      [
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",
@@ -34,8 +28,7 @@
           "backgroundColor": "#F4F1E8"
         }
       ],
-      "expo-secure-store",
-      "./plugins/withNoApsEnvironment.js"
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
