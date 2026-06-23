@@ -9,7 +9,7 @@ import { Colors } from '../src/constants/design';
 import { initDb } from '../src/services/db';
 import { sync } from '../src/services/sync';
 import { requestPermissions, rescheduleAll } from '../src/services/notifications';
-import { getUser, isOnboarded } from '../src/hooks/useUser';
+import { getUser, isOnboarded, isLoggedIn, applyRememberPolicy } from '../src/hooks/useUser';
 import { loadLanguage } from '../src/hooks/useLanguage';
 
 SplashScreen.preventAutoHideAsync();
@@ -28,9 +28,11 @@ export default function RootLayout() {
     async function bootstrap() {
       await loadLanguage();
       await initDb();
+      await applyRememberPolicy();
 
       const user = await getUser();
-      if (!user) {
+      const loggedIn = await isLoggedIn();
+      if (!user || !loggedIn) {
         await SplashScreen.hideAsync();
         setReady(true);
         router.replace('/auth/login');

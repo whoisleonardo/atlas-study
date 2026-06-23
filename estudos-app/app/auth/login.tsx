@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors, Radii, Spacing, Fonts } from '../../src/constants/design';
 import { useLanguage } from '../../src/hooks/useLanguage';
-import { validateLogin, isOnboarded } from '../../src/hooks/useUser';
+import { validateLogin, isOnboarded, getUser, setSession } from '../../src/hooks/useUser';
 import { AtlasLogo } from '../../src/components/AtlasLogo';
 import type { Lang } from '../../src/constants/strings';
 
@@ -12,15 +12,21 @@ export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getUser().then((u) => { if (u) setEmail(u.email); });
+  }, []);
 
   const handleLogin = async () => {
     if (!email.trim()) { Alert.alert('', t.emailRequired); return; }
     if (!password) { Alert.alert('', t.passwordRequired); return; }
     setLoading(true);
     const user = await validateLogin(email.trim(), password);
+    if (!user) { setLoading(false); Alert.alert('', t.wrongCredentials); return; }
+    await setSession(remember);
     setLoading(false);
-    if (!user) { Alert.alert('', t.wrongCredentials); return; }
     const onboarded = await isOnboarded();
     router.replace(onboarded ? '/(tabs)' : '/onboarding');
   };
@@ -68,6 +74,12 @@ export default function LoginScreen() {
               placeholderTextColor={Colors.gray}
               secureTextEntry
             />
+            <TouchableOpacity style={styles.rememberRow} onPress={() => setRemember(!remember)} activeOpacity={0.7}>
+              <View style={[styles.checkbox, remember && styles.checkboxOn]}>
+                {remember && <Text style={styles.checkboxMark}>✓</Text>}
+              </View>
+              <Text style={styles.rememberText}>{t.rememberMe}</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.cta} onPress={handleLogin} disabled={loading}>
               <Text style={styles.ctaText}>{loading ? '...' : t.signIn}</Text>
             </TouchableOpacity>
@@ -96,6 +108,11 @@ const styles = StyleSheet.create({
   langTextActive: { color: '#fff' },
   form: { gap: Spacing.sm },
   label: { fontSize: 12, fontFamily: Fonts.semiBold, color: Colors.inkMuted, textTransform: 'uppercase', letterSpacing: 0.5 },
+  rememberRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginTop: 4 },
+  checkbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 1.5, borderColor: Colors.cardBorder, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.card },
+  checkboxOn: { backgroundColor: Colors.clay, borderColor: Colors.clay },
+  checkboxMark: { color: '#fff', fontSize: 13, fontFamily: Fonts.bold },
+  rememberText: { fontSize: 14, fontFamily: Fonts.regular, color: Colors.inkMuted },
   input: { backgroundColor: Colors.card, borderWidth: 1, borderColor: Colors.cardBorder, borderRadius: Radii.cta, padding: Spacing.md, fontSize: 16, fontFamily: Fonts.regular, color: Colors.ink, marginBottom: Spacing.sm },
   cta: { backgroundColor: Colors.clay, borderRadius: Radii.cta, padding: Spacing.md + 2, alignItems: 'center', marginTop: Spacing.sm },
   ctaText: { color: '#fff', fontFamily: Fonts.bold, fontSize: 16 },

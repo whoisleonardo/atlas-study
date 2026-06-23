@@ -1,6 +1,7 @@
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { ProgressRing } from './ProgressRing';
 import { Colors, Radii, Spacing, Fonts } from '../constants/design';
+import { useLanguage } from '../hooks/useLanguage';
 import type { TopicoResumo, Item } from '../types';
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function TopicCard({ topico, nextItem, onPress, onLongPress }: Props) {
+  const { t } = useLanguage();
   return (
     <TouchableOpacity
       style={styles.card}
@@ -29,11 +31,11 @@ export function TopicCard({ topico, nextItem, onPress, onLongPress }: Props) {
           <Text style={styles.nome}>{topico.nome}</Text>
           {nextItem && (
             <Text style={styles.next} numberOfLines={1}>
-              Next · {nextItem.titulo}
+              {t.next} · {nextItem.titulo}
             </Text>
           )}
           <Text style={styles.count}>
-            {topico.concluidos} of {topico.totalItens} items
+            {t.itemsProgress(topico.concluidos, topico.totalItens)}
           </Text>
         </View>
       </View>

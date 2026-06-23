@@ -6,7 +6,7 @@ import { Colors, Spacing, Radii, Fonts } from '../../src/constants/design';
 import { pickCsvFile, parseCsvToPreview, importRows } from '../../src/services/csv';
 import { sync } from '../../src/services/sync';
 import { useLanguage } from '../../src/hooks/useLanguage';
-import { getUser, clearUser } from '../../src/hooks/useUser';
+import { getUser, logout } from '../../src/hooks/useUser';
 import type { AtlasUser } from '../../src/hooks/useUser';
 import type { Lang } from '../../src/constants/strings';
 import type { CsvPreviewRow } from '../../src/types';
@@ -66,7 +66,7 @@ export default function VoceScreen() {
         text: t.signOut,
         style: 'destructive',
         onPress: async () => {
-          await clearUser();
+          await logout();
           router.replace('/auth/login');
         },
       },

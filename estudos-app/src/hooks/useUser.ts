@@ -5,6 +5,8 @@ import { Platform } from 'react-native';
 
 const USER_KEY = 'atlas_user';
 const ONBOARDED_KEY = 'atlas_onboarded';
+const SESSION_KEY = 'atlas_session';
+const REMEMBER_KEY = 'atlas_remember';
 
 export interface AtlasUser {
   name: string;
@@ -61,6 +63,30 @@ export async function saveUser(input: { name: string; email: string; password: s
 export async function clearUser(): Promise<void> {
   await secure.removeItem(USER_KEY);
   await AsyncStorage.removeItem(ONBOARDED_KEY);
+  await AsyncStorage.removeItem(SESSION_KEY);
+  await AsyncStorage.removeItem(REMEMBER_KEY);
+}
+
+export async function isLoggedIn(): Promise<boolean> {
+  return (await AsyncStorage.getItem(SESSION_KEY)) === '1';
+}
+
+// Marks the user as logged in. `remember` controls whether the session
+// survives an app restart (true) or requires logging in again (false).
+export async function setSession(remember: boolean): Promise<void> {
+  await AsyncStorage.setItem(SESSION_KEY, '1');
+  await AsyncStorage.setItem(REMEMBER_KEY, remember ? '1' : '0');
+}
+
+// Sign out: clears the session but KEEPS the account, so the user can log back in.
+export async function logout(): Promise<void> {
+  await AsyncStorage.removeItem(SESSION_KEY);
+}
+
+// Run on launch: if "remember me" was off, drop the session so login is required.
+export async function applyRememberPolicy(): Promise<void> {
+  const remember = await AsyncStorage.getItem(REMEMBER_KEY);
+  if (remember !== '1') await AsyncStorage.removeItem(SESSION_KEY);
 }
 
 export async function validateLogin(email: string, password: string): Promise<AtlasUser | null> {

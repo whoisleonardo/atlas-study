@@ -3,6 +3,7 @@ import { FlatList, View, Text, StyleSheet, TouchableOpacity, RefreshControl, Tex
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, Radii, Fonts } from '../../src/constants/design';
+import { useLanguage } from '../../src/hooks/useLanguage';
 import { getAllTopicos, insertTopico, upsertTopico, deleteTopico } from '../../src/services/topicoRepo';
 import { getItemsByTopico } from '../../src/services/itemRepo';
 import { enqueuePendingOp, sync } from '../../src/services/sync';
@@ -13,6 +14,7 @@ import type { TopicoResumo, Item } from '../../src/types';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [topicos, setTopicos] = useState<TopicoResumo[]>([]);
   const [nextItems, setNextItems] = useState<Record<number, Item>>({});
   const [refreshing, setRefreshing] = useState(false);
@@ -23,10 +25,10 @@ export default function HomeScreen() {
     const data = await getAllTopicos();
     setTopicos(data);
     const nexts: Record<number, Item> = {};
-    for (const t of data) {
-      const items = await getItemsByTopico(t.id);
+    for (const tp of data) {
+      const items = await getItemsByTopico(tp.id);
       const next = items.find((i) => i.status === 'PENDENTE' || i.status === 'FAZENDO');
-      if (next) nexts[t.id] = next;
+      if (next) nexts[tp.id] = next;
     }
     setNextItems(nexts);
   }, []);
@@ -59,11 +61,11 @@ export default function HomeScreen() {
   const confirmDelete = (topico: TopicoResumo) => {
     Alert.alert(
       topico.nome,
-      'Delete this topic and all its items?',
+      t.deleteTopicConfirm,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t.cancel, style: 'cancel' },
         {
-          text: 'Delete',
+          text: t.delete,
           style: 'destructive',
           onPress: async () => {
             await deleteTopico(topico.id);
@@ -82,7 +84,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <AtlasLogo size={26} />
-          <Text style={styles.heading}>Topics</Text>
+          <Text style={styles.heading}>{t.tabTopics}</Text>
         </View>
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowModal(true)}>
           <Ionicons name="add" size={24} color="#fff" />
@@ -91,7 +93,7 @@ export default function HomeScreen() {
 
       <FlatList
         data={topicos}
-        keyExtractor={(t) => String(t.id)}
+        keyExtractor={(tp) => String(tp.id)}
         renderItem={({ item }) => (
           <TopicCard
             topico={item}
@@ -103,28 +105,28 @@ export default function HomeScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.clay} />}
         contentContainerStyle={{ paddingTop: Spacing.md, paddingBottom: 100 }}
         ListEmptyComponent={
-          <Text style={styles.empty}>No topics yet. Tap + to add one.</Text>
+          <Text style={styles.empty}>{t.noTopics}</Text>
         }
       />
 
       <Modal visible={showModal} transparent animationType="slide">
         <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>New Topic</Text>
+            <Text style={styles.modalTitle}>{t.newTopic}</Text>
             <TextInput
               style={styles.input}
               value={newNome}
               onChangeText={setNewNome}
-              placeholder="Topic name"
+              placeholder={t.topicName}
               placeholderTextColor={Colors.gray}
               autoFocus
             />
             <View style={styles.modalBtns}>
               <TouchableOpacity onPress={() => setShowModal(false)} style={styles.cancelBtn}>
-                <Text style={styles.cancelText}>Cancel</Text>
+                <Text style={styles.cancelText}>{t.cancel}</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={createTopico} style={styles.confirmBtn}>
-                <Text style={styles.confirmText}>Create</Text>
+                <Text style={styles.confirmText}>{t.create}</Text>
               </TouchableOpacity>
             </View>
           </View>

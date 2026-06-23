@@ -53,6 +53,9 @@ export const S = {
       'CSV columns: topico, tipo, titulo, descricao, onde, periodo, data_prevista, status, peso, pagamento, valor, moeda, progresso, link. ' +
       'tipo = meta / teoria / pratica (item) or curso (course); for courses "onde" is the platform. ' +
       'data_prevista uses YYYY-MM-DD. The topic is created automatically if it does not exist.',
+    rememberMe: 'Remember me',
+    deleteTopicConfirm: 'Delete this topic and all its items?',
+    itemsProgress: (done: number, total: number) => `${done} of ${total} items`,
   },
   pt: {
     tabTopics: 'Tópicos', tabCalendar: 'Calendário', tabCourses: 'Cursos',
@@ -106,6 +109,9 @@ export const S = {
       'Colunas do CSV: topico, tipo, titulo, descricao, onde, periodo, data_prevista, status, peso, pagamento, valor, moeda, progresso, link. ' +
       'tipo = meta / teoria / pratica (item) ou curso; para cursos, "onde" é a plataforma. ' +
       'data_prevista no formato AAAA-MM-DD. O tópico é criado automaticamente se não existir.',
+    rememberMe: 'Lembrar de mim',
+    deleteTopicConfirm: 'Excluir este tópico e todos os seus itens?',
+    itemsProgress: (done: number, total: number) => `${done} de ${total} itens`,
   },
 } as const;
 

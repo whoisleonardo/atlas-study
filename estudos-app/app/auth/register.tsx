@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingVi
 import { useRouter } from 'expo-router';
 import { Colors, Radii, Spacing, Fonts } from '../../src/constants/design';
 import { useLanguage } from '../../src/hooks/useLanguage';
-import { getUser, saveUser } from '../../src/hooks/useUser';
+import { getUser, saveUser, setSession } from '../../src/hooks/useUser';
 import { AtlasLogo } from '../../src/components/AtlasLogo';
 import type { Lang } from '../../src/constants/strings';
 
@@ -27,6 +27,7 @@ export default function RegisterScreen() {
       return;
     }
     await saveUser({ name: name.trim(), email: email.trim().toLowerCase(), password });
+    await setSession(true);
     setLoading(false);
     router.replace('/onboarding');
   };
