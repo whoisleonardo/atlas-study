@@ -56,6 +56,8 @@ export const S = {
     rememberMe: 'Remember me',
     deleteTopicConfirm: 'Delete this topic and all its items?',
     itemsProgress: (done: number, total: number) => `${done} of ${total} items`,
+    notifReminderTitle: 'Time to study!', notifReminderDaily: 'Your daily reminder.',
+    notifReminderBody: 'Your reminder.', notifDeadlineTitle: 'Atlas — deadline approaching',
   },
   pt: {
     tabTopics: 'Tópicos', tabCalendar: 'Calendário', tabCourses: 'Cursos',
@@ -112,6 +114,8 @@ export const S = {
     rememberMe: 'Lembrar de mim',
     deleteTopicConfirm: 'Excluir este tópico e todos os seus itens?',
     itemsProgress: (done: number, total: number) => `${done} de ${total} itens`,
+    notifReminderTitle: 'Hora de estudar!', notifReminderDaily: 'Seu lembrete diário.',
+    notifReminderBody: 'Seu lembrete.', notifDeadlineTitle: 'Atlas — prazo chegando',
   },
 } as const;
 

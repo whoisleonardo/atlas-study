@@ -1,6 +1,8 @@
 import * as Notifications from 'expo-notifications';
 import { getDb } from './db';
 import { getAllItemsWithDates } from './itemRepo';
+import { getCurrentLang } from '../hooks/useLanguage';
+import { S } from '../constants/strings';
 import type { Lembrete } from '../types';
 
 Notifications.setNotificationHandler({
@@ -18,6 +20,7 @@ export async function requestPermissions(): Promise<boolean> {
 }
 
 export async function scheduleItemNotifications(): Promise<void> {
+  const t = S[getCurrentLang()];
   const items = await getAllItemsWithDates();
   for (const item of items) {
     if (!item.data_prevista || item.status === 'CONCLUIDO') continue;
@@ -26,7 +29,7 @@ export async function scheduleItemNotifications(): Promise<void> {
     if (date <= new Date()) continue;
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: 'Estudos — prazo chegando',
+        title: t.notifDeadlineTitle,
         body: item.titulo,
         data: { itemId: item.id },
       },
@@ -36,12 +39,13 @@ export async function scheduleItemNotifications(): Promise<void> {
 }
 
 export async function scheduleLembrete(lembrete: Lembrete): Promise<string[]> {
+  const t = S[getCurrentLang()];
   const [hour, minute] = lembrete.hora.split(':').map(Number);
   const ids: string[] = [];
 
   if (lembrete.frequencia === 'DIARIO') {
     const id = await Notifications.scheduleNotificationAsync({
-      content: { title: 'Hora de estudar!', body: 'Seu lembrete diário.' },
+      content: { title: t.notifReminderTitle, body: t.notifReminderDaily },
       trigger: { type: Notifications.SchedulableTriggerInputTypes.DAILY, hour, minute },
     });
     ids.push(id);
@@ -54,7 +58,7 @@ export async function scheduleLembrete(lembrete: Lembrete): Promise<string[]> {
       const weekday = dayMap[dia];
       if (!weekday) continue;
       const id = await Notifications.scheduleNotificationAsync({
-        content: { title: 'Hora de estudar!', body: 'Seu lembrete.' },
+        content: { title: t.notifReminderTitle, body: t.notifReminderBody },
         trigger: { type: Notifications.SchedulableTriggerInputTypes.WEEKLY, weekday, hour, minute },
       });
       ids.push(id);
