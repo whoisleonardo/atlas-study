@@ -3,7 +3,7 @@
     "name": "Atlas",
     "slug": "estudos-app",
     "scheme": "estudos",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "icon": "./assets/icon.png",
     "platforms": [
       "ios",
@@ -28,7 +28,17 @@
           "backgroundColor": "#F4F1E8"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
+        }
+      ],
+      "./plugins/withAndroidAbis.js"
     ],
     "experiments": {
       "typedRoutes": true
