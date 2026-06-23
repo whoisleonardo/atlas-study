@@ -113,14 +113,15 @@ export default function VoceScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t.importCsv}</Text>
+        <Text style={styles.helpText}>{t.csvHelp}</Text>
         <TouchableOpacity style={styles.pickBtn} onPress={handlePick}>
           <Text style={styles.pickBtnText}>{t.chooseCsv}</Text>
         </TouchableOpacity>
 
         {preview && (
           <View style={styles.previewCard}>
-            <Text style={styles.previewTitle}>{preview.length} rows</Text>
-            <Text style={styles.previewSub}>{itemCount} items · {cursoCount} courses</Text>
+            <Text style={styles.previewTitle}>{t.rowsN(preview.length)}</Text>
+            <Text style={styles.previewSub}>{t.previewCount(itemCount, cursoCount)}</Text>
             <View style={styles.previewList}>
               {preview.slice(0, 8).map((row, i) => (
                 <View key={i} style={styles.previewRow}>
@@ -130,7 +131,7 @@ export default function VoceScreen() {
                 </View>
               ))}
               {preview.length > 8 && (
-                <Text style={styles.previewMore}>+{preview.length - 8} more</Text>
+                <Text style={styles.previewMore}>{t.moreN(preview.length - 8)}</Text>
               )}
             </View>
             <TouchableOpacity style={styles.cta} onPress={handleImport} disabled={importing}>
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
   profileEmail: { fontSize: 13, fontFamily: Fonts.regular, color: Colors.inkMuted, marginTop: 2 },
   section: { marginHorizontal: Spacing.md, marginBottom: Spacing.lg },
   sectionTitle: { fontSize: 16, fontFamily: Fonts.bold, color: Colors.ink, marginBottom: Spacing.md },
+  helpText: { fontSize: 12, fontFamily: Fonts.regular, color: Colors.inkMuted, lineHeight: 18, marginBottom: Spacing.md },
   langRow: { flexDirection: 'row', gap: Spacing.sm },
   langBtn: { flex: 1, paddingVertical: Spacing.sm + 2, borderRadius: Radii.pill, borderWidth: 1.5, borderColor: Colors.cardBorder, alignItems: 'center', backgroundColor: Colors.card },
   langBtnActive: { backgroundColor: Colors.clay, borderColor: Colors.clay },

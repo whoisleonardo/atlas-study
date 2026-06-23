@@ -5,12 +5,14 @@ import { Colors, Spacing, Radii, Fonts } from '../../src/constants/design';
 import { getAllTopicos } from '../../src/services/topicoRepo';
 import { scheduleLembrete, cancelLembrete } from '../../src/services/notifications';
 import { getDb } from '../../src/services/db';
+import { useLanguage } from '../../src/hooks/useLanguage';
 import type { TopicoResumo, Lembrete, Frequencia } from '../../src/types';
 
 const DIAS = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
-const DIAS_LABEL = ['S','M','T','W','T','F','S'];
 
 export default function LembretesScreen() {
+  const { t } = useLanguage();
+  const FREQ_LABEL: Record<Frequencia, string> = { DIARIO: t.daily, SEMANAL: t.weekly, CUSTOM: t.custom };
   const [topicos, setTopicos] = useState<TopicoResumo[]>([]);
   const [lembretes, setLembretes] = useState<Lembrete[]>([]);
   const [selectedTopico, setSelectedTopico] = useState<number | undefined>();
@@ -52,7 +54,7 @@ export default function LembretesScreen() {
     };
     const ids = await scheduleLembrete(inserted);
     await db.runAsync('UPDATE lembretes SET expo_notification_ids = ? WHERE id = ?', [JSON.stringify(ids), inserted.id]);
-    Alert.alert('Reminder scheduled', `Next at ${hora}`);
+    Alert.alert(t.reminderScheduled, t.reminderNextAt(hora));
     await load();
   };
 
@@ -84,46 +86,46 @@ export default function LembretesScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 100 }}>
       <View style={styles.header}>
-        <Text style={styles.heading}>Reminders</Text>
+        <Text style={styles.heading}>{t.tabReminders}</Text>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.label}>Topic (optional)</Text>
+        <Text style={styles.label}>{t.topicOptional}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: Spacing.md }}>
-          {topicos.map((t) => (
+          {topicos.map((tp) => (
             <TouchableOpacity
-              key={t.id}
-              style={[styles.pill, selectedTopico === t.id && { backgroundColor: t.cor }]}
-              onPress={() => setSelectedTopico(selectedTopico === t.id ? undefined : t.id)}
+              key={tp.id}
+              style={[styles.pill, selectedTopico === tp.id && { backgroundColor: tp.cor }]}
+              onPress={() => setSelectedTopico(selectedTopico === tp.id ? undefined : tp.id)}
             >
-              <Text style={[styles.pillText, selectedTopico === t.id && { color: '#fff' }]}>{t.nome}</Text>
+              <Text style={[styles.pillText, selectedTopico === tp.id && { color: '#fff' }]}>{tp.nome}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
 
-        <Text style={styles.label}>Frequency</Text>
+        <Text style={styles.label}>{t.frequency}</Text>
         <View style={styles.segmented}>
           {(['DIARIO','SEMANAL','CUSTOM'] as Frequencia[]).map((f) => (
             <TouchableOpacity key={f} style={[styles.seg, frequencia === f && styles.segActive]} onPress={() => setFrequencia(f)}>
-              <Text style={[styles.segText, frequencia === f && styles.segTextActive]}>{f}</Text>
+              <Text style={[styles.segText, frequencia === f && styles.segTextActive]}>{FREQ_LABEL[f]}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
         {(frequencia === 'SEMANAL' || frequencia === 'CUSTOM') && (
           <>
-            <Text style={styles.label}>Days</Text>
+            <Text style={styles.label}>{t.days}</Text>
             <View style={styles.diasRow}>
               {DIAS.map((d, i) => (
                 <TouchableOpacity key={d} style={[styles.dayBtn, diasSel.has(d) && styles.dayBtnActive]} onPress={() => toggleDia(d)}>
-                  <Text style={[styles.dayBtnText, diasSel.has(d) && styles.dayBtnTextActive]}>{DIAS_LABEL[i]}</Text>
+                  <Text style={[styles.dayBtnText, diasSel.has(d) && styles.dayBtnTextActive]}>{t.weekdayInitials[i]}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           </>
         )}
 
-        <Text style={styles.label}>Time</Text>
+        <Text style={styles.label}>{t.time}</Text>
         <View style={styles.timePicker}>
           <View style={styles.timeCol}>
             <TouchableOpacity onPress={() => adjustHour(1)}><Text style={styles.timeArrow}>▲</Text></TouchableOpacity>
@@ -139,20 +141,20 @@ export default function LembretesScreen() {
         </View>
 
         <TouchableOpacity style={styles.cta} onPress={schedule}>
-          <Text style={styles.ctaText}>Schedule reminder</Text>
+          <Text style={styles.ctaText}>{t.scheduleReminder}</Text>
         </TouchableOpacity>
       </View>
 
       {lembretes.length > 0 && (
         <View style={[styles.card, { marginTop: Spacing.md }]}>
-          <Text style={styles.label}>Active reminders</Text>
+          <Text style={styles.label}>{t.activeReminders}</Text>
           {lembretes.map((l, idx) => (
             <View key={l.id}>
               {idx > 0 && <View style={styles.sep} />}
               <View style={styles.lembRow}>
                 <View>
                   <Text style={styles.lembHora}>{l.hora}</Text>
-                  <Text style={styles.lembFreq}>{l.frequencia}</Text>
+                  <Text style={styles.lembFreq}>{FREQ_LABEL[l.frequencia]}</Text>
                 </View>
                 <Switch value={!!l.ativo} onValueChange={() => toggleActive(l)} trackColor={{ true: Colors.clay }} />
               </View>

@@ -18,8 +18,6 @@ function getDaysInMonth(year: number, month: number): Date[] {
   return days;
 }
 
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
 export default function CalendarScreen() {
   const { t } = useLanguage();
   const now = new Date();
@@ -87,7 +85,7 @@ export default function CalendarScreen() {
 
   const days = getDaysInMonth(year, month);
   const firstDow = days[0].getDay();
-  const monthLabel = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+  const monthLabel = `${t.months[month]} ${year}`;
   const todayStr = toISO(now);
 
   const prevMonth = () => {
@@ -113,7 +111,7 @@ export default function CalendarScreen() {
         </View>
 
         <View style={styles.grid}>
-          {DAYS.map((d) => <Text key={d} style={styles.dow}>{d}</Text>)}
+          {t.weekdaysShort.map((d) => <Text key={d} style={styles.dow}>{d}</Text>)}
           {Array(firstDow).fill(null).map((_, i) => <View key={`e${i}`} style={styles.cell} />)}
           {days.map((d) => {
             const str = toISO(d);

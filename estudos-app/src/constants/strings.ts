@@ -43,6 +43,16 @@ export const S = {
     syncComplete: 'Sync complete', syncFailed: 'Sync failed',
     importComplete: (items: number, courses: number) => `${items} items · ${courses} courses imported`,
     parseError: 'Could not read CSV', importFailed: 'Import failed',
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    weekdaysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    weekdayInitials: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+    reminderScheduled: 'Reminder scheduled', reminderNextAt: (h: string) => `Next at ${h}`,
+    rowsN: (n: number) => `${n} rows`, moreN: (n: number) => `+${n} more`,
+    previewCount: (i: number, c: number) => `${i} items · ${c} courses`,
+    csvHelp:
+      'CSV columns: topico, tipo, titulo, descricao, onde, periodo, data_prevista, status, peso, pagamento, valor, moeda, progresso, link. ' +
+      'tipo = meta / teoria / pratica (item) or curso (course); for courses "onde" is the platform. ' +
+      'data_prevista uses YYYY-MM-DD. The topic is created automatically if it does not exist.',
   },
   pt: {
     tabTopics: 'Tópicos', tabCalendar: 'Calendário', tabCourses: 'Cursos',
@@ -86,6 +96,16 @@ export const S = {
     syncComplete: 'Sincronização completa', syncFailed: 'Falha na sincronização',
     importComplete: (items: number, courses: number) => `${items} itens · ${courses} cursos importados`,
     parseError: 'Não foi possível ler o CSV', importFailed: 'Falha na importação',
+    months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+    weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+    weekdayInitials: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+    reminderScheduled: 'Lembrete agendado', reminderNextAt: (h: string) => `Próximo às ${h}`,
+    rowsN: (n: number) => `${n} linhas`, moreN: (n: number) => `+${n} mais`,
+    previewCount: (i: number, c: number) => `${i} itens · ${c} cursos`,
+    csvHelp:
+      'Colunas do CSV: topico, tipo, titulo, descricao, onde, periodo, data_prevista, status, peso, pagamento, valor, moeda, progresso, link. ' +
+      'tipo = meta / teoria / pratica (item) ou curso; para cursos, "onde" é a plataforma. ' +
+      'data_prevista no formato AAAA-MM-DD. O tópico é criado automaticamente se não existir.',
   },
 } as const;
 
