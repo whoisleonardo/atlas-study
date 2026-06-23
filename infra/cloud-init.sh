@@ -20,6 +20,27 @@ iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
 iptables -I INPUT 6 -m state --state NEW -p tcp --dport 443 -j ACCEPT
 netfilter-persistent save
 
+# Endurece o SSH: só chave (sem senha) e sem login direto de root.
+# A porta 22 fica aberta (necessária pro deploy via SSH do GitHub Actions),
+# mas key-only + fail2ban reduzem bem o risco de brute-force.
+cat > /etc/ssh/sshd_config.d/99-atlas-hardening.conf <<'EOF'
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitRootLogin no
+EOF
+systemctl restart ssh 2>/dev/null || systemctl restart sshd 2>/dev/null || true
+
+# fail2ban bane IPs que erram o login SSH repetidamente.
+apt-get update -y
+apt-get install -y fail2ban
+cat > /etc/fail2ban/jail.d/sshd.local <<'EOF'
+[sshd]
+enabled = true
+maxretry = 5
+bantime = 1h
+EOF
+systemctl enable --now fail2ban
+
 # Pasta de deploy (onde vão docker-compose.yml, Caddyfile e .env)
 mkdir -p /home/ubuntu/atlas
 chown ubuntu:ubuntu /home/ubuntu/atlas
