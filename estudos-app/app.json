@@ -44,6 +44,13 @@
         "monochromeImage": "./assets/android-icon-monochrome.png",
         "backgroundColor": "#A85C42"
       }
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a6177b05-2777-45ce-9461-0f550611e9dc"
+      }
+    },
+    "owner": "whoisleonardo"
   }
 }
