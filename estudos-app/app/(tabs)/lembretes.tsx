@@ -105,14 +105,14 @@ export default function LembretesScreen() {
 
         <Text style={styles.label}>{t.frequency}</Text>
         <View style={styles.segmented}>
-          {(['DIARIO','SEMANAL','CUSTOM'] as Frequencia[]).map((f) => (
+          {(['DIARIO','SEMANAL'] as Frequencia[]).map((f) => (
             <TouchableOpacity key={f} style={[styles.seg, frequencia === f && styles.segActive]} onPress={() => setFrequencia(f)}>
               <Text style={[styles.segText, frequencia === f && styles.segTextActive]}>{FREQ_LABEL[f]}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        {(frequencia === 'SEMANAL' || frequencia === 'CUSTOM') && (
+        {frequencia === 'SEMANAL' && (
           <>
             <Text style={styles.label}>{t.days}</Text>
             <View style={styles.diasRow}>
