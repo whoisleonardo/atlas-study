@@ -34,7 +34,8 @@
           "backgroundColor": "#F4F1E8"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "./plugins/withNoApsEnvironment.js"
     ],
     "experiments": {
       "typedRoutes": true
