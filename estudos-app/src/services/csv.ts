@@ -1,5 +1,5 @@
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
+import { File } from 'expo-file-system';
 import Papa from 'papaparse';
 import { parseRow } from '../logic/csvParse';
 import { getDb } from './db';
@@ -16,7 +16,7 @@ export async function pickCsvFile(): Promise<string | null> {
 }
 
 export async function parseCsvToPreview(uri: string): Promise<CsvPreviewRow[]> {
-  const content = await FileSystem.readAsStringAsync(uri);
+  const content = await new File(uri).text();
   const { data } = Papa.parse(content, { header: true, skipEmptyLines: true });
   const rows: CsvPreviewRow[] = [];
   for (const raw of data as Record<string, string>[]) {
