@@ -71,4 +71,18 @@ describe('parseRow', () => {
     const result = parseRow({ ...base, status: '' });
     expect(result?.status).toBe('PENDENTE');
   });
+
+  it('parses descricao for items and courses', () => {
+    expect(parseRow({ ...base, descricao: 'Praticar Em, Am, C' })?.descricao).toBe('Praticar Em, Am, C');
+    expect(parseRow({ ...base, tipo: 'curso', descricao: 'Curso completo' })?.descricao).toBe('Curso completo');
+  });
+
+  it('leaves descricao undefined when blank', () => {
+    expect(parseRow(base)?.descricao).toBeUndefined();
+  });
+
+  it('caps descricao at 1000 chars', () => {
+    const result = parseRow({ ...base, descricao: 'x'.repeat(1500) });
+    expect(result?.descricao?.length).toBe(1000);
+  });
 });

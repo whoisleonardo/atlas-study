@@ -3,7 +3,7 @@
     "name": "Atlas",
     "slug": "estudos-app",
     "scheme": "estudos",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "icon": "./assets/icon.png",
     "platforms": [
       "ios",

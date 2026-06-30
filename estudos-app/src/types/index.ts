@@ -80,6 +80,7 @@ export interface CsvPreviewRow {
   tipo: ItemTipo | 'curso';
   titulo: string;
   topico: string;
+  descricao?: string;
   periodo?: string;
   data_prevista?: string;
   status: ItemStatus | CursoStatus;

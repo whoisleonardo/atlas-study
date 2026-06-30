@@ -50,6 +50,7 @@ export async function importRows(rows: CsvPreviewRow[], fileUri: string): Promis
     if (row.tipo === 'curso') {
       await insertCurso(topicoId, {
         nome: row.titulo,
+        descricao: row.descricao,
         status: (row.status as any) ?? 'PLANEJADO',
         pagamento: 'UNICO',
         valor: row.valor ?? 0,
@@ -62,6 +63,7 @@ export async function importRows(rows: CsvPreviewRow[], fileUri: string): Promis
       await insertItem(topicoId, {
         tipo: row.tipo,
         titulo: row.titulo,
+        descricao: row.descricao,
         status: (row.status as any) ?? 'PENDENTE',
         peso: row.peso,
         periodo: row.periodo,

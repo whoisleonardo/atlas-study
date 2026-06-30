@@ -40,6 +40,7 @@ export function parseRow(row: Record<string, string>): CsvPreviewRow | null {
 
   const topico = (row.topico ?? '').trim();
   const titulo = (row.titulo ?? '').trim();
+  const descricao = (row.descricao ?? '').trim().slice(0, 1000) || undefined;
   const periodo = (row.periodo ?? '').trim() || undefined;
   const data_prevista = parseISODate((row.data_prevista ?? '').trim());
   const peso = parseInt(row.peso ?? '') || 1;
@@ -48,9 +49,9 @@ export function parseRow(row: Record<string, string>): CsvPreviewRow | null {
     const status = enumOr(row.status ?? '', CURSO_STATUSES, 'PLANEJADO');
     const valor = parseDecimal(row.valor ?? '');
     const moeda = (row.moeda ?? 'BRL').trim().toUpperCase() || 'BRL';
-    return { tipo: 'curso', titulo, topico, periodo, data_prevista, status, peso, valor, moeda };
+    return { tipo: 'curso', titulo, topico, descricao, periodo, data_prevista, status, peso, valor, moeda };
   }
 
   const status = enumOr(row.status ?? '', ITEM_STATUSES, 'PENDENTE');
-  return { tipo, titulo, topico, periodo, data_prevista, status, peso };
+  return { tipo, titulo, topico, descricao, periodo, data_prevista, status, peso };
 }
