@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { useLocalSearchParams, useFocusEffect, useRouter } from 'expo-router';
 import { Colors, Spacing, Radii, Fonts } from '../../src/constants/design';
 import { getTopico, updateTopicoCor } from '../../src/services/topicoRepo';
 import { getItemsByTopico, groupByPeriodo, updateItemStatus, upsertItem, insertItem, deleteItem } from '../../src/services/itemRepo';
@@ -19,6 +19,7 @@ export default function TopicoDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const topicoId = Number(id);
   const { t } = useLanguage();
+  const router = useRouter();
 
   const [topico, setTopico] = useState<Topico | null>(null);
   const [items, setItems] = useState<Item[]>([]);
@@ -198,7 +199,7 @@ export default function TopicoDetail() {
               {grupos[periodo].map((item, idx) => (
                 <View key={item.id}>
                   {idx > 0 && <View style={styles.sep} />}
-                  <ItemRow item={item} onStatusChange={handleStatusChange} onLongPress={() => confirmDeleteItem(item)} />
+                  <ItemRow item={item} onStatusChange={handleStatusChange} onPress={() => router.push(`/item/${item.id}`)} onLongPress={() => confirmDeleteItem(item)} />
                 </View>
               ))}
             </View>

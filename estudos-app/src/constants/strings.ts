@@ -58,6 +58,7 @@ export const S = {
     itemsProgress: (done: number, total: number) => `${done} of ${total} items`,
     notifReminderTitle: 'Time to study!', notifReminderDaily: 'Your daily reminder.',
     notifReminderBody: 'Your reminder.', notifDeadlineTitle: 'Atlas — deadline approaching',
+    notes: 'Notes', notesPlaceholder: 'Write your notes here…', notesSaved: 'Notes saved',
   },
   pt: {
     tabTopics: 'Tópicos', tabCalendar: 'Calendário', tabCourses: 'Cursos',
@@ -116,6 +117,7 @@ export const S = {
     itemsProgress: (done: number, total: number) => `${done} de ${total} itens`,
     notifReminderTitle: 'Hora de estudar!', notifReminderDaily: 'Seu lembrete diário.',
     notifReminderBody: 'Seu lembrete.', notifDeadlineTitle: 'Atlas — prazo chegando',
+    notes: 'Notas', notesPlaceholder: 'Escreva suas notas aqui…', notesSaved: 'Notas salvas',
   },
 } as const;
 

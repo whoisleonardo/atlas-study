@@ -30,7 +30,8 @@ public class ItemService {
     public Item atualizar(Long id, AtualizaItem dto) {
         Item i = repo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Item " + id + " não encontrado"));
-        i.setDataPrevista(dto.dataPrevista());
+        if (dto.dataPrevista() != null) i.setDataPrevista(dto.dataPrevista());
+        if (dto.descricao() != null) i.setDescricao(dto.descricao());
         return repo.save(i);
     }
 

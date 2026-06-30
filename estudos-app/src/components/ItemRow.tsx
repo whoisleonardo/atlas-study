@@ -11,6 +11,7 @@ const STATUS_CYCLE: Record<ItemStatus, ItemStatus> = {
 interface Props {
   item: Item;
   onStatusChange: (id: number, next: ItemStatus) => void;
+  onPress?: () => void;
   onLongPress?: () => void;
 }
 
@@ -32,29 +33,37 @@ function StatusIcon({ status, color }: { status: ItemStatus; color: string }) {
   );
 }
 
-export function ItemRow({ item, onStatusChange, onLongPress }: Props) {
+export function ItemRow({ item, onStatusChange, onPress, onLongPress }: Props) {
   const color = Colors.clay;
   const isDone = item.status === 'CONCLUIDO';
+  const hasNotes = !!item.descricao && item.descricao.trim().length > 0;
 
   return (
-    <TouchableOpacity
-      style={styles.row}
-      onPress={() => onStatusChange(item.id, STATUS_CYCLE[item.status])}
-      onLongPress={onLongPress}
-      delayLongPress={400}
-      activeOpacity={0.7}
-    >
-      <StatusIcon status={item.status} color={color} />
-      <View style={styles.content}>
+    <View style={styles.row}>
+      <TouchableOpacity
+        onPress={() => onStatusChange(item.id, STATUS_CYCLE[item.status])}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 6 }}
+        activeOpacity={0.7}
+      >
+        <StatusIcon status={item.status} color={color} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.content}
+        onPress={onPress}
+        onLongPress={onLongPress}
+        delayLongPress={400}
+        activeOpacity={0.7}
+      >
         <Text style={[styles.titulo, isDone && styles.done]}>{item.titulo}</Text>
         {item.periodo && <Text style={styles.meta}>{item.periodo}</Text>}
-      </View>
+      </TouchableOpacity>
+      {hasNotes && <Text style={styles.noteIcon}>📝</Text>}
       {item.tipo === 'META' && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>META</Text>
         </View>
       )}
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -67,6 +76,7 @@ const styles = StyleSheet.create({
   titulo: { fontSize: 15, fontFamily: Fonts.regular, color: Colors.ink },
   done: { color: Colors.gray, textDecorationLine: 'line-through' },
   meta: { fontSize: 12, fontFamily: Fonts.regular, color: Colors.inkMuted, marginTop: 1 },
+  noteIcon: { fontSize: 13, marginRight: 6, opacity: 0.7 },
   badge: { backgroundColor: Colors.clayLight, borderRadius: 99, paddingHorizontal: 8, paddingVertical: 2 },
   badgeText: { fontSize: 10, color: Colors.clay, fontFamily: Fonts.semiBold },
 });

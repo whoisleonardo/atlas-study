@@ -78,6 +78,15 @@ export default function RootLayout() {
           headerStyle: { backgroundColor: Colors.bone },
         }}
       />
+      <Stack.Screen
+        name="item/[id]"
+        options={{
+          headerShown: true,
+          title: '',
+          headerTintColor: Colors.clay,
+          headerStyle: { backgroundColor: Colors.bone },
+        }}
+      />
     </Stack>
   );
 }

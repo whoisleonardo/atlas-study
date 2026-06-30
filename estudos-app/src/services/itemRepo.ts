@@ -6,6 +6,16 @@ export async function getItemsByTopico(topicoId: number): Promise<Item[]> {
   return db.getAllAsync<Item>('SELECT * FROM itens WHERE topico_id = ? ORDER BY id', [topicoId]);
 }
 
+export async function getItem(id: number): Promise<Item | null> {
+  const db = getDb();
+  return db.getFirstAsync<Item>('SELECT * FROM itens WHERE id = ?', [id]);
+}
+
+export async function updateItemDescricao(id: number, descricao: string): Promise<void> {
+  const db = getDb();
+  await db.runAsync('UPDATE itens SET descricao = ? WHERE id = ?', [descricao, id]);
+}
+
 export async function getItemsByDate(date: string): Promise<Item[]> {
   const db = getDb();
   return db.getAllAsync<Item>('SELECT * FROM itens WHERE data_prevista = ?', [date]);
