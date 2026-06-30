@@ -52,6 +52,7 @@ export const S = {
     csvHelp:
       'CSV columns: topico, tipo, titulo, descricao, onde, periodo, data_prevista, status, peso, pagamento, valor, moeda, progresso, link. ' +
       'tipo = meta / teoria / pratica (item) or curso (course); for courses "onde" is the platform. ' +
+      'descricao becomes the item notes (tap an item to read/edit them). ' +
       'data_prevista uses YYYY-MM-DD. The topic is created automatically if it does not exist.',
     rememberMe: 'Remember me',
     deleteTopicConfirm: 'Delete this topic and all its items?',
@@ -111,6 +112,7 @@ export const S = {
     csvHelp:
       'Colunas do CSV: topico, tipo, titulo, descricao, onde, periodo, data_prevista, status, peso, pagamento, valor, moeda, progresso, link. ' +
       'tipo = meta / teoria / pratica (item) ou curso; para cursos, "onde" é a plataforma. ' +
+      'descricao vira as notas do item (toque no item para ler/editar). ' +
       'data_prevista no formato AAAA-MM-DD. O tópico é criado automaticamente se não existir.',
     rememberMe: 'Lembrar de mim',
     deleteTopicConfirm: 'Excluir este tópico e todos os seus itens?',
