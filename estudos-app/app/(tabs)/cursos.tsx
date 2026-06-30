@@ -18,6 +18,7 @@ export default function CursosScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [selectedTopico, setSelectedTopico] = useState<number | null>(null);
   const [cursoNome, setCursoNome] = useState('');
   const [cursoPlatform, setCursoPlatform] = useState('');
@@ -61,12 +62,26 @@ export default function CursosScreen() {
   };
 
   const resetForm = () => {
+    setEditingId(null);
     setSelectedTopico(null); setCursoNome(''); setCursoPlatform('');
     setCursoStatus('PLANEJADO'); setCursoPagamento('UNICO');
     setCursoValor('0'); setCursoMoeda('BRL'); setCursoMeses('0');
   };
 
-  const handleAdd = async () => {
+  const openEdit = (curso: Curso) => {
+    setEditingId(curso.id);
+    setSelectedTopico(curso.topico_id);
+    setCursoNome(curso.nome);
+    setCursoPlatform(curso.plataforma ?? '');
+    setCursoStatus(curso.status);
+    setCursoPagamento(curso.pagamento);
+    setCursoValor(String(curso.valor));
+    setCursoMoeda(curso.moeda);
+    setCursoMeses(String(curso.meses_ativos));
+    setShowModal(true);
+  };
+
+  const handleSave = async () => {
     if (!cursoNome.trim()) { Alert.alert('', t.title + ' obrigatório'); return; }
     if (!selectedTopico) { Alert.alert('', t.pickTopic); return; }
     const data: Omit<Curso, 'id' | 'topico_id' | 'synced_at'> = {
@@ -79,12 +94,19 @@ export default function CursosScreen() {
       progresso: 0,
       meses_ativos: parseInt(cursoMeses) || 0,
     };
-    try {
-      const result = await api.addCurso(selectedTopico, data);
-      await upsertCurso({ id: result.id, topico_id: selectedTopico, ...data, synced_at: new Date().toISOString() });
-    } catch {
-      await insertCurso(selectedTopico, data);
-      await enqueuePendingOp('POST', `/api/topicos/${selectedTopico}/cursos`, data);
+    if (editingId) {
+      const existing = cursos.find((c) => c.id === editingId);
+      const editData = { ...data, progresso: existing?.progresso ?? 0 };
+      await upsertCurso({ id: editingId, topico_id: selectedTopico, ...editData, synced_at: undefined });
+      try { await enqueuePendingOp('PUT', `/api/cursos/${editingId}`, editData); } catch {}
+    } else {
+      try {
+        const result = await api.addCurso(selectedTopico, data);
+        await upsertCurso({ id: result.id, topico_id: selectedTopico, ...data, synced_at: new Date().toISOString() });
+      } catch {
+        await insertCurso(selectedTopico, data);
+        await enqueuePendingOp('POST', `/api/topicos/${selectedTopico}/cursos`, data);
+      }
     }
     setShowModal(false);
     resetForm();
@@ -114,7 +136,7 @@ export default function CursosScreen() {
       >
         <View style={styles.header}>
           <Text style={styles.heading}>{t.tabCourses}</Text>
-          <TouchableOpacity style={styles.addBtn} onPress={() => setShowModal(true)}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => { resetForm(); setShowModal(true); }}>
             <Ionicons name="add" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -140,6 +162,7 @@ export default function CursosScreen() {
               {idx > 0 && <View style={styles.sep} />}
               <TouchableOpacity
                 style={styles.rowInner}
+                onPress={() => openEdit(curso)}
                 onLongPress={() => confirmDelete(curso)}
                 delayLongPress={400}
                 activeOpacity={0.7}
@@ -166,7 +189,7 @@ export default function CursosScreen() {
         <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.sheet}>
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-              <Text style={styles.sheetTitle}>{t.addCourse}</Text>
+              <Text style={styles.sheetTitle}>{editingId ? t.editCourse : t.addCourse}</Text>
 
               <Text style={styles.fieldLabel}>{t.pickTopic}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: Spacing.sm }}>
@@ -229,8 +252,8 @@ export default function CursosScreen() {
                 <TouchableOpacity style={styles.cancelBtn} onPress={() => { setShowModal(false); resetForm(); }}>
                   <Text style={styles.cancelText}>{t.cancel}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.confirmBtn} onPress={handleAdd}>
-                  <Text style={styles.confirmText}>{t.add}</Text>
+                <TouchableOpacity style={styles.confirmBtn} onPress={handleSave}>
+                  <Text style={styles.confirmText}>{editingId ? t.save : t.add}</Text>
                 </TouchableOpacity>
               </View>
             </ScrollView>

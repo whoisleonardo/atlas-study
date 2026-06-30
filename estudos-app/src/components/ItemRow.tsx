@@ -1,4 +1,5 @@
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, Fonts } from '../constants/design';
 import type { Item, ItemStatus } from '../types';
 
@@ -57,7 +58,7 @@ export function ItemRow({ item, onStatusChange, onPress, onLongPress }: Props) {
         <Text style={[styles.titulo, isDone && styles.done]}>{item.titulo}</Text>
         {item.periodo && <Text style={styles.meta}>{item.periodo}</Text>}
       </TouchableOpacity>
-      {hasNotes && <Text style={styles.noteIcon}>📝</Text>}
+      {hasNotes && <Ionicons name="document-text-outline" size={16} color={Colors.gray} style={styles.noteIcon} />}
       {item.tipo === 'META' && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>META</Text>
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   titulo: { fontSize: 15, fontFamily: Fonts.regular, color: Colors.ink },
   done: { color: Colors.gray, textDecorationLine: 'line-through' },
   meta: { fontSize: 12, fontFamily: Fonts.regular, color: Colors.inkMuted, marginTop: 1 },
-  noteIcon: { fontSize: 13, marginRight: 6, opacity: 0.7 },
+  noteIcon: { marginRight: 6 },
   badge: { backgroundColor: Colors.clayLight, borderRadius: 99, paddingHorizontal: 8, paddingVertical: 2 },
   badgeText: { fontSize: 10, color: Colors.clay, fontFamily: Fonts.semiBold },
 });
